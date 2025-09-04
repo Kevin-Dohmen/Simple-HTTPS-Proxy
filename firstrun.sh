@@ -5,6 +5,11 @@ DOMAIN="yourdomain.com" # Change to your actual domain
 # Create necessary directories for certbot challenges
 mkdir -p "./certbot/www"
 mkdir -p "./certbot/conf"
+CERT_DIR="./certbot/conf/live/$DOMAIN"
+mkdir -p "$CERT_DIR"
+
+# Replace 'yourdomain.com' in nginx config with actual domain
+sed -i "s/yourdomain.com/$DOMAIN/g" ./nginx/conf.d/default.conf
 
 # Start nginx and certbot containers
 echo "Starting nginx and certbot containers..."
@@ -21,6 +26,9 @@ docker compose run --rm certbot certbot certonly --webroot \
     -d "$DOMAIN"
 
 echo "Certificate request complete. Reloading nginx..."
+
+# Uncomment commented lines in nginx config between `## <HTTPS BLOCK>` and `## </HTTPS BLOCK>`
+sed -i '/## <HTTPS BLOCK>/, /## <\/HTTPS BLOCK>/ s/^#//g' ./nginx/conf.d/default.conf
 
 docker compose exec nginx nginx -s reload
 
