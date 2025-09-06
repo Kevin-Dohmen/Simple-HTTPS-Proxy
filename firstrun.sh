@@ -29,6 +29,8 @@ echo "Certificate request complete. Reloading nginx..."
 
 # Uncomment commented lines in nginx config between `## <HTTPS BLOCK>` and `## </HTTPS BLOCK>`
 sed -i '/## <HTTPS BLOCK>/, /## <\/HTTPS BLOCK>/ s/^#//g' ./nginx/conf.d/default.conf
+# Uncomment HTTPS redirect and comment out proxy in HTTP block
+sed -i '/## <HTTPS REDIRECT>/, /## <\/HTTPS REDIRECT>/ s/^#//g' ./nginx/conf.d/default.conf
 
 docker compose exec nginx nginx -s reload
 
