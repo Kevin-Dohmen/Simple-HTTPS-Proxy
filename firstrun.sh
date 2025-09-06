@@ -27,7 +27,7 @@ docker compose run --rm certbot certbot certonly --webroot \
     -d "$DOMAIN" \
     --force-renewal \
     --non-interactive --agree-tos -m "$EMAIL" \
-    -v --debug-challenges
+    -v
 
 echo "Certificate request complete. Reloading nginx..."
 
