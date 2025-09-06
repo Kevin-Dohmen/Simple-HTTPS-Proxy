@@ -22,7 +22,7 @@ sleep 5
 
 # Run certbot to obtain certificates using HTTP challenge
 echo "Requesting SSL certificate for $DOMAIN using certbot..."
-docker compose run --rm certbot certbot certonly --webroot \
+docker compose exec certbot certbot certonly \
     --webroot -w /var/www/certbot \
     -d "$DOMAIN" \
     --force-renewal \
