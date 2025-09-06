@@ -1,12 +1,15 @@
 #!/bin/bash
 
 DOMAIN="yourdomain.com" # Change to your actual domain
+EMAIL="your_email@example.com" # Change to your email for certbot notifications
 
 # Create necessary directories for certbot challenges
 mkdir -p "./certbot/www"
 mkdir -p "./certbot/conf"
 CERT_DIR="./certbot/conf/live/$DOMAIN"
 mkdir -p "$CERT_DIR"
+
+echo "Replacing placeholder domain with actual domain: $DOMAIN"
 
 # Replace 'yourdomain.com' in nginx config with actual domain
 sed -i "s/yourdomain.com/$DOMAIN/g" ./nginx/conf.d/default.conf
@@ -20,10 +23,11 @@ sleep 5
 # Run certbot to obtain certificates using HTTP challenge
 echo "Requesting SSL certificate for $DOMAIN using certbot..."
 docker compose run --rm certbot certbot certonly --webroot \
-    --webroot-path=/var/www/certbot \
-    --register-unsafely-without-email \
-    --agree-tos \
-    -d "$DOMAIN"
+    --webroot -w /var/www/certbot \
+    -d "$DOMAIN" \
+    --force-renewal \
+    --non-interactive --agree-tos -m "$EMAIL" \
+    -v --debug-challenges
 
 echo "Certificate request complete. Reloading nginx..."
 
